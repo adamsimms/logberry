@@ -59,24 +59,18 @@ def cmToStep(cm):
 
 def sleepDelayCount(step):
     step = abs(step)
-    if (step < 850):
-        return .3
-    elif (step >=850) & (step <=1000):
+    if (step < 1000):
+        return .15
+    elif (step >=1000) & (step <1500):
+        return .25
+    elif (step >= 1500) & (step < 2000):
         return .35
-    elif (step > 1000) & (step < 1300):
-        return .4
-    elif (step >= 1300) & (step < 1450):
-        return .45
-    elif (step >= 1450) & (step < 1600):
+    elif (step >= 2000) & (step < 3000):
         return .5
-    elif (step >= 1600) & (step < 2000):
+    elif (step >= 3000) & (step < 4000):
         return .6
-    elif (step >= 2000) & (step < 2500):
-        return .65
-    elif (step >= 2500) & (step < 3000):
-        return .7
     else:
-        return .75
+        return .7
 
 def time_elapsed(time_value):
     return(time.time()-time_value)
@@ -92,12 +86,14 @@ def wave_sequence(tide_distance, number_of_waves = 1):
             sig_wave_height = round(cmToStep(cm = float(wave_data['sig_wave_height'][0]))*.8)*multiplier
             period_damper = 0.67
             peak_wave_period = float(wave_data['peak_wave_period'][0])*(1 if multiplier*period_damper <= 1 else multiplier*period_damper)
+            diff_per_wave = round(tide_distance/number_of_waves)
+            wave_timing = []
             print("peak wave period (secs) : "+str(peak_wave_period))
             print("max wave height (m): "+str(float(wave_data['max_wave_height'][0])))
             print("sig wave height (m): "+str(float(wave_data['sig_wave_height'][0])))
-            print("max_wave_height_delay :"+str(sleepDelayCount(max_wave_height)))
-            diff_per_wave = round(tide_distance/number_of_waves)
-            wave_timing = []
+            print("max_wave_height_delay :" +str(sleepDelayCount(max_wave_height)))
+            print("sig_wave_height_delay : "+str(sleepDelayCount(sig_wave_height)))
+            print("diff_per_wave_delay : "+str(sleepDelayCount(diff_per_wave)))
             while loop_count < number_of_waves:
                 start_time = time.time()
                 
@@ -140,8 +136,8 @@ def wave_sequence(tide_distance, number_of_waves = 1):
                         create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
                 loop_count += 1
                 #print("After "+str(loop_count)+" waves: \n Motor 0 : "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
-            while (Motor1.isBusy()):
-                continue   
+#            while (Motor1.isBusy()):
+#                continue   
             print("Position Update - Motor 0: "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
             print("Wave sequence duration: "+ str(wave_timing))
             print(np.mean(wave_timing))
@@ -218,6 +214,15 @@ while (Motor0.isBusy()|Motor1.isBusy()):
     continue
 Motor0.setAsHome()
 Motor1.setAsHome()
+print("At lowest tide level")
+time.sleep(1.5)
+
+Motor0.move(tide_range)
+Motor1.move(tide_range)
+while (Motor0.isBusy()|Motor1.isBusy()):
+    continue
+print("At highest tide level")
+time.sleep(1.5)
 
 
 #Load tide data to reach current tide position 
@@ -246,8 +251,8 @@ time.sleep(1)
 try:
     while True:
         tide_data_refresh()
-finally:
-#except KeyboardInterrupt:
+#finally:
+except KeyboardInterrupt:
     print("loop ended")
     print(global_wave_timing)
     time.sleep(1)
