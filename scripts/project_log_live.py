@@ -171,7 +171,7 @@ def tide_data_refresh():
         except:
             continue
     (current_from, current_to) = (tide_control(float(tide_data.tail(2).head(1)['Height'])), tide_control(float(tide_data.tail(2).tail(1)['Height'])))
-    (current_from_position, current_to_position) = (round(current_from*18000), round(current_to*18000))
+    (current_from_position, current_to_position) = (round(current_from*tide_range), round(current_to*tide_range))
     print('Actual From (m): '+str(current_from)+' Actual To (m): '+str(current_to))
     print('Motor Position From : '+str(current_from_position)+' Motor Position To : '+str(current_to_position))
     tide_distance_count = current_to_position - current_from_position
