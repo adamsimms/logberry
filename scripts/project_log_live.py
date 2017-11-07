@@ -69,8 +69,14 @@ def sleepDelayCount(step):
         return .45
     elif (step >= 1450) & (step < 1600):
         return .5
-    else:
+    elif (step >= 1600) & (step < 2000):
         return .6
+    elif (step >= 2000) & (step < 2500):
+        return .65
+    elif (step >= 2500) & (step < 3000):
+        return .7
+    else:
+        return .75
 
 def time_elapsed(time_value):
     return(time.time()-time_value)
@@ -78,61 +84,72 @@ def time_elapsed(time_value):
 
 def wave_sequence(tide_distance, number_of_waves = 1):
     loop_count = 0
-    wave_data = pd.read_csv("wave_status.csv")
-    max_wave_height = round(cmToStep(cm = float(wave_data['max_wave_height'][0]))*.8)*multiplier
-    sig_wave_height = round(cmToStep(cm = float(wave_data['sig_wave_height'][0]))*.8)*multiplier
-    peak_wave_period = wave_data['peak_wave_period'][0]
-    print(peak_wave_period)
-    diff_per_wave = round(tide_distance/number_of_waves)
-    wave_timing = []
-    while loop_count < number_of_waves:
-        start_time = time.time()
-        
-        create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
-        if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = 1000)
-            loop_count += 1
-            wave_timing.append(time_elapsed(start_time))
-            continue
-        
-        create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = 1000)
-        if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = 1000)
-            loop_count += 1
-            wave_timing.append(time_elapsed(start_time))
-            continue
-        
-        create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = 1000)
-        if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
-            loop_count += 1
-            wave_timing.append(time_elapsed(start_time))
-            continue
-        
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
-        if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
-            loop_count += 1
-            wave_timing.append(time_elapsed(start_time))
-            continue
-        
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
-        
-        wave_timing.append(time_elapsed(start_time))
-        
-        if time_elapsed(start_time) < (peak_wave_period-(.8)):
-            time_to_kill = (peak_wave_period - time_elapsed(start_time))
-            time_killing_start = time.time()
-            while (time_to_kill*.8) > time_elapsed(time_killing_start):
+    while True:
+        try:
+            wave_data = pd.read_csv("wave_status.csv")
+            
+            max_wave_height = round(cmToStep(cm = float(wave_data['max_wave_height'][0]))*.8)*multiplier
+            sig_wave_height = round(cmToStep(cm = float(wave_data['sig_wave_height'][0]))*.8)*multiplier
+            period_damper = 0.67
+            peak_wave_period = float(wave_data['peak_wave_period'][0])*(1 if multiplier*period_damper <= 1 else multiplier*period_damper)
+            print("peak wave period (secs) : "+str(peak_wave_period))
+            print("max wave height (m): "+str(float(wave_data['max_wave_height'][0])))
+            print("sig wave height (m): "+str(float(wave_data['sig_wave_height'][0])))
+            print("max_wave_height_delay :"+str(sleepDelayCount(max_wave_height)))
+            diff_per_wave = round(tide_distance/number_of_waves)
+            wave_timing = []
+            while loop_count < number_of_waves:
+                start_time = time.time()
+                
+                create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
+                if time.time()-start_time > peak_wave_period:
+                    create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = 1000)
+                    loop_count += 1
+                    wave_timing.append(time_elapsed(start_time))
+                    continue
+                
+                create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = 1000)
+                if time.time()-start_time > peak_wave_period:
+                    create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = 1000)
+                    loop_count += 1
+                    wave_timing.append(time_elapsed(start_time))
+                    continue
+                
+                create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = 1000)
+                if time.time()-start_time > peak_wave_period:
+                    create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
+                    loop_count += 1
+                    wave_timing.append(time_elapsed(start_time))
+                    continue
+                
                 create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
-        loop_count += 1
-        #print("After "+str(loop_count)+" waves: \n Motor 0 : "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
-    while (Motor1.isBusy()):
-        continue   
-    print("Motor 0 after all waves: "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
-    print(wave_timing)
-    print(np.mean(wave_timing))
-    global_wave_timing.append(wave_timing)
+                if time.time()-start_time > peak_wave_period:
+                    create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
+                    loop_count += 1
+                    wave_timing.append(time_elapsed(start_time))
+                    continue
+                
+                create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
+                
+                wave_timing.append(time_elapsed(start_time))
+                
+                if time_elapsed(start_time) < (peak_wave_period-(.8)):
+                    time_to_kill = (peak_wave_period - time_elapsed(start_time))
+                    time_killing_start = time.time()
+                    while (time_to_kill*.8) > time_elapsed(time_killing_start):
+                        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
+                loop_count += 1
+                #print("After "+str(loop_count)+" waves: \n Motor 0 : "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
+            while (Motor1.isBusy()):
+                continue   
+            print("Position Update - Motor 0: "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
+            print("Wave sequence duration: "+ str(wave_timing))
+            print(np.mean(wave_timing))
+            global_wave_timing.append(wave_timing)
+            break
+        except:
+            print("wave error")
+            continue
 
 def tide_control(value):
     if value > 1.1:
@@ -159,7 +176,8 @@ def tide_data_refresh():
             continue
     (current_from, current_to) = (tide_control(float(tide_data.tail(2).head(1)['Height'])), tide_control(float(tide_data.tail(2).tail(1)['Height'])))
     (current_from_position, current_to_position) = (round(current_from*18000), round(current_to*18000))
-    print('From : '+str(current_from_position)+' To : '+str(current_to_position))
+    print('Actual From (m): '+str(current_from)+' Actual To (m): '+str(current_to))
+    print('Motor Position From : '+str(current_from_position)+' Motor Position To : '+str(current_to_position))
     tide_distance_count = current_to_position - current_from_position
     
     if (current_from_position != previous_from_position) & (current_to_position != previous_to_position):
