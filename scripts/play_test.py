@@ -1,7 +1,12 @@
 #import the required module
 import Slush
 import time
-
+def cmToStep(cm):
+     return(round(cm*5400/9))
+    
+movement = eval(input("Enter (left_motor_in_cm,right_motor_in_cm): "))
+m0_steps = cmToStep(float(movement[0]))
+m1_steps = cmToStep(float(movement[1]))
 #initalizes the board and all its functions
 SlushEngine = Slush.sBoard()
 
@@ -24,17 +29,12 @@ cm = 5400/9
 lowest_tide = round(.05*cm)
 Motor0.setMaxSpeed(800)
 Motor1.setMaxSpeed(800)
-#Motor0.move(lowest_tide)
-Motor1.move(lowest_tide)
+Motor0.move(m0_steps)
+Motor1.move(m1_steps)
 
 while (Motor0.isBusy()|Motor1.isBusy()):
     continue
 
-
-#Motor0.goHome()
-#Motor1.goHome()
-
-print("Motor 0 back home: "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
 
 Motor0.setCurrent(hold = 0, run = 0, acc =0, dec = 0)
 Motor1.setCurrent(hold = 0, run = 0, acc =0, dec = 0)
