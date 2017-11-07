@@ -79,8 +79,8 @@ def time_elapsed(time_value):
 def wave_sequence(tide_distance, number_of_waves = 1):
     loop_count = 0
     wave_data = pd.read_csv("wave_status.csv")
-    max_wave_height = round(cmToStep(cm = float(wave_data['max_wave_height'][0]))*.8)*2
-    sig_wave_height = round(cmToStep(cm = float(wave_data['sig_wave_height'][0]))*.8)*2
+    max_wave_height = round(cmToStep(cm = float(wave_data['max_wave_height'][0]))*.8)*multiplier
+    sig_wave_height = round(cmToStep(cm = float(wave_data['sig_wave_height'][0]))*.8)*multiplier
     peak_wave_period = wave_data['peak_wave_period'][0]
     print(peak_wave_period)
     diff_per_wave = round(tide_distance/number_of_waves)
@@ -183,8 +183,10 @@ def tide_data_refresh():
 
 
 #inputs
-lowest_tide = cmToStep(-20)
-tide_range = cmToStep(30)
+lowest_tide = cmToStep(eval(input("Enter height of lowest tide from ground in cm :(test = 2)")))
+tide_range = cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30) :")))
+multiplier = eval(input("Enter wave multiplier: "))
+
 #SCRIPT OF EVENTS
 #start and position motor    
 motorReset(Motor0)
