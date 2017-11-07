@@ -61,13 +61,15 @@ def sleepDelayCount(step):
     step = abs(step)
     if (step < 1000):
         return .15
-    elif (step >=1000) & (step <1500):
+    elif (step >=1000) & (step <2000):
         return .25
-    elif (step >= 1500) & (step < 2000):
+    elif (step >= 2000) & (step < 2300):
         return .35
-    elif (step >= 2000) & (step < 3000):
-        return .5
-    elif (step >= 3000) & (step < 4000):
+    elif (step >= 2300) & (step < 2800):
+        return .45
+    elif (step >= 2800) & (step < 3500):
+        return .55
+    elif (step >= 3500) & (step < 4500):
         return .6
     else:
         return .7
