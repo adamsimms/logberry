@@ -5,7 +5,9 @@ while True:
     try:
         tide.get_tide_data()
         wave.get_wave_data()
+        continue
     except KeyboardInterrupt:
+        print("Ending script")
         break
-    except:
+    else:
         print("Error in data refresh")
