@@ -217,11 +217,15 @@ def tide_data_refresh():
         if abs(Motor0.getPosition() - current_to_position) == 0|abs(Motor1.getPosition() - current_to_position) == 0:
             wave_sequence(tide_distance = 0)
         else:
-            target_distance = current_to_position - Motor0.getPosition()
-            waves_in_remaining_time = round((900-time_elapsed(time_of_new_tide_data))/global_wave_timing[-1][-1])
-            tide_pace = round(target_distance/waves_in_remaining_time)
-            wave_sequence(tide_distance = tide_pace)
-            
+            try:
+                target_distance = current_to_position - Motor0.getPosition()
+                waves_in_remaining_time = round((900-time_elapsed(time_of_new_tide_data))/global_wave_timing[-1][-1])
+                tide_pace = round(target_distance/waves_in_remaining_time)
+                wave_sequence(tide_distance = tide_pace)
+            except:
+                print("Error in standard wave. retrying...")
+                
+                
 
 
 
