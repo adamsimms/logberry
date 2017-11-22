@@ -38,8 +38,8 @@ def closing_action():
     print("loop ended")
     print(global_wave_timing)
     time.sleep(1)
-    Motor0.setMaxSpeed(1000)
-    Motor1.setMaxSpeed(1000)
+    Motor0.setMaxSpeed(40)
+    Motor1.setMaxSpeed(40)
     Motor0.goHome()
     Motor1.goHome()
     while (Motor0.isBusy()|Motor1.isBusy()):
@@ -54,7 +54,7 @@ def closing_action():
 
 
     
-def create_wave(first_motor = Motor0, second_motor = Motor1, wave_height = 250, wave_diff = 25, max_count = 10, current_count = 0, sleep_delay = .2, speed = 900):
+def create_wave(first_motor = Motor0, second_motor = Motor1, wave_height = 250, wave_diff = 25, max_count = 10, current_count = 0, sleep_delay = .2, speed = 40):
     first_motor.setMaxSpeed(speed)
     Motor1.setMaxSpeed(speed)
     while current_count < max_count:
@@ -132,35 +132,35 @@ def wave_sequence(tide_distance, number_of_waves = 1):
     
         start_time = time.time()
         
-        create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
+        create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 40)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = 1000)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = 40)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = 1000)
+        create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = 40)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = 1000)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = 40)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = 1000)
+        create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = 40)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 40)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
+        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 40)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 1000)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 40)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 1000)
+        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 40)
         
         wave_timing.append(time_elapsed(start_time))
         
@@ -168,7 +168,7 @@ def wave_sequence(tide_distance, number_of_waves = 1):
             time_to_kill = (peak_wave_period - time_elapsed(start_time))
             time_killing_start = time.time()
             while (time_to_kill*.8) > time_elapsed(time_killing_start):
-                create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 1000)
+                create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 40)
         loop_count += 1
             #print("After "+str(loop_count)+" waves: \n Motor 0 : "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
 #            while (Motor1.isBusy()):
@@ -239,8 +239,8 @@ multiplier = eval(input("Enter wave multiplier: "))
 #start and position motor    
 motorReset(Motor0)
 motorReset(Motor1)
-Motor0.setMaxSpeed(1000)
-Motor1.setMaxSpeed(1000)
+Motor0.setMaxSpeed(40)
+Motor1.setMaxSpeed(40)
 
 Motor0.move(lowest_tide)
 Motor1.move(lowest_tide)
