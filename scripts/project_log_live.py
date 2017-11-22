@@ -81,7 +81,7 @@ def create_wave(first_motor = Motor0, second_motor = Motor1, wave_height = 250, 
                 continue
             
 def cmToStep(cm):
-     return(round(cm*5400/9))
+     return(round(cm*200/9))
 
 def sleepDelayCount(step):
     step = abs(step)
