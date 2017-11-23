@@ -6,10 +6,10 @@ import wave_data as wave
 import pandas as pd
 import numpy as np
 
-speed_steps_per_minute = 160
+speed_steps_per_minute = 40
 
 def cmToStep(cm):
-    return(round(cm*800/9))
+    return(round(cm*200/9))
 
 #fresh data
 tide.get_tide_data()
@@ -24,7 +24,7 @@ Motor1 = Slush.Motor(3)
 
 def motorReset(Motor_name = Motor0):
     Motor_name.resetDev()
-    Motor_name.setMicroSteps(4)
+    Motor_name.setMicroSteps(1)
     Motor_name.free()
 
 def off(Motor_name = Motor0):
