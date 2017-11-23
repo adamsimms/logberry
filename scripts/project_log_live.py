@@ -6,6 +6,10 @@ import wave_data as wave
 import pandas as pd
 import numpy as np
 
+speed_steps_per_minute = 160
+
+def cmToStep(cm):
+    return(round(cm*800/9))
 
 #fresh data
 tide.get_tide_data()
@@ -20,7 +24,7 @@ Motor1 = Slush.Motor(3)
 
 def motorReset(Motor_name = Motor0):
     Motor_name.resetDev()
-    Motor_name.setMicroSteps(1)
+    Motor_name.setMicroSteps(4)
     Motor_name.free()
 
 def off(Motor_name = Motor0):
@@ -38,8 +42,8 @@ def closing_action():
     print("loop ended")
     print(global_wave_timing)
     time.sleep(1)
-    Motor0.setMaxSpeed(40)
-    Motor1.setMaxSpeed(40)
+    Motor0.setMaxSpeed(speed_steps_per_minute)
+    Motor1.setMaxSpeed(speed_steps_per_minute)
     Motor0.goHome()
     Motor1.goHome()
     while (Motor0.isBusy()|Motor1.isBusy()):
@@ -79,25 +83,23 @@ def create_wave(first_motor = Motor0, second_motor = Motor1, wave_height = 250, 
         while (first_motor.isBusy()#|second_motor.isBusy()
                ):
                 continue
-            
-def cmToStep(cm):
-     return(round(cm*200/9))
+
 
 def sleepDelayCount(step):
     step = abs(step)
-    if (step < 1000):
+    if (step < cmToStep(1.67)):
         return .15
-    elif (step >=1000) & (step <2000):
+    elif (step >=cmToStep(1.67)) & (step <cmToStep(3.33)):
         return .25
-    elif (step >= 2000) & (step < 2300):
+    elif (step >= cmToStep(3.33)) & (step < cmToStep(3.83)):
         return .35
-    elif (step >= 2300) & (step < 2800):
+    elif (step >= cmToStep(3.83)) & (step < cmToStep(4.67)):
         return .45
-    elif (step >= 2800) & (step < 3500):
+    elif (step >= cmToStep(4.67)) & (step < cmToStep(5.83)):
         return .55
-    elif (step >= 3500) & (step < 4000):
+    elif (step >= cmToStep(5.83)) & (step < cmToStep(6.67)):
         return .6
-    elif (step >= 4000) & (step < 4500):
+    elif (step >= cmToStep(6.67)) & (step < cmToStep(7.5)):
         return .7
     else:
         return .8
@@ -132,35 +134,35 @@ def wave_sequence(tide_distance, number_of_waves = 1):
     
         start_time = time.time()
         
-        create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 40)
+        create_wave(wave_height = max_wave_height, wave_diff = round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = speed_steps_per_minute)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = 40)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-round(max_wave_height*.2), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-round(max_wave_height*.2)), speed = speed_steps_per_minute)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = 40)
+        create_wave(wave_height = round(max_wave_height*.8), wave_diff = -(round(max_wave_height*.2*.8)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(max_wave_height*.8)), speed = speed_steps_per_minute)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = 40)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave-(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave-(round(max_wave_height*.2*.2))), speed = speed_steps_per_minute)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = 40)
+        create_wave(wave_height = sig_wave_height, wave_diff = -(round(max_wave_height*.2*.2)), max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(sig_wave_height), speed = speed_steps_per_minute)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 40)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = speed_steps_per_minute)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 40)
+        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = speed_steps_per_minute)
         if time.time()-start_time > peak_wave_period:
-            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = 40)
+            create_wave(wave_height = sig_wave_height, wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(diff_per_wave), speed = speed_steps_per_minute)
             loop_count += 1
             wave_timing.append(time_elapsed(start_time))
             continue
         
-        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = 40)
+        create_wave(wave_height = round(sig_wave_height*.8), wave_diff = diff_per_wave, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(max_wave_height), speed = speed_steps_per_minute)
         
         wave_timing.append(time_elapsed(start_time))
         
@@ -168,7 +170,7 @@ def wave_sequence(tide_distance, number_of_waves = 1):
             time_to_kill = (peak_wave_period - time_elapsed(start_time))
             time_killing_start = time.time()
             while (time_to_kill*.8) > time_elapsed(time_killing_start):
-                create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = 40)
+                create_wave(wave_height = round(sig_wave_height*.8), wave_diff = 0, max_count = 1, current_count = 0, sleep_delay = sleepDelayCount(round(sig_wave_height*.8)), speed = speed_steps_per_minute)
         loop_count += 1
             #print("After "+str(loop_count)+" waves: \n Motor 0 : "+str(Motor0.getPosition())+" Motor 1: "+str(Motor1.getPosition()))
 #            while (Motor1.isBusy()):
@@ -223,7 +225,8 @@ def tide_data_refresh():
                 tide_pace = round(target_distance/waves_in_remaining_time)
                 wave_sequence(tide_distance = tide_pace)
             except:
-                print("Error in standard wave. retrying...")
+                print("Error in standard wave. Running blank wave to kill time...")
+                wave_sequence(tide_distance = 0)
                 
                 
 
@@ -239,8 +242,8 @@ multiplier = eval(input("Enter wave multiplier: "))
 #start and position motor    
 motorReset(Motor0)
 motorReset(Motor1)
-Motor0.setMaxSpeed(40)
-Motor1.setMaxSpeed(40)
+Motor0.setMaxSpeed(speed_steps_per_minute)
+Motor1.setMaxSpeed(speed_steps_per_minute)
 
 Motor0.move(lowest_tide)
 Motor1.move(lowest_tide)
