@@ -237,6 +237,10 @@ speed_steps_per_minute = round(speed_steps_per_minute_pre*speed_multiplier)
 #start and position motor    
 motorReset(Motor0)
 motorReset(Motor1)
+
+Motor0.setCurrent(hold = 200, run = 500, acc = 500, dec = 500)
+Motor1.setCurrent(hold = 200, run = 500, acc = 500, dec = 500)
+
 Motor0.setMaxSpeed(speed_steps_per_minute)
 Motor1.setMaxSpeed(speed_steps_per_minute)
 
