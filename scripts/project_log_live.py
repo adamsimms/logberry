@@ -25,7 +25,7 @@ Motor1 = Slush.Motor(3)
 def motorReset(Motor_name = Motor0):
     Motor_name.resetDev()
     Motor_name.setMicroSteps(1)
-    Motor_name.free()
+#    Motor_name.free()
 
 def off(Motor_name = Motor0):
     motorReset(Motor_name)
