@@ -228,9 +228,9 @@ def tide_data_refresh():
 
 #inputs
 lowest_tide = 10#cmToStep(eval(input("Enter height of lowest tide from ground in cm (test = 2): ")))
-tide_range = 110#cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30): ")))
-multiplier = 2#eval(input("Enter wave multiplier: "))
-speed_multiplier = 1.4#min(eval(input("Enter speed multiplier  (0.8, 1, max = 2): ")),2)
+tide_range = 10#cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30): ")))
+multiplier = 1#eval(input("Enter wave multiplier: "))
+speed_multiplier = 1#min(eval(input("Enter speed multiplier  (0.8, 1, max = 2): ")),2)
 speed_steps_per_minute_pre = 40
 speed_steps_per_minute = round(speed_steps_per_minute_pre*speed_multiplier)
 
