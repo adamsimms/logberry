@@ -6,7 +6,7 @@ import wave_data as wave
 import pandas as pd
 import numpy as np
 import random
-
+import data_input
 
 def cmToStep(cm):
     return(round(cm*200/9))
@@ -227,10 +227,10 @@ def tide_data_refresh():
 
 
 #inputs
-lowest_tide = 10#cmToStep(eval(input("Enter height of lowest tide from ground in cm (test = 2): ")))
-tide_range = 10#cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30): ")))
-multiplier = 1#eval(input("Enter wave multiplier: "))
-speed_multiplier = 1#min(eval(input("Enter speed multiplier  (0.8, 1, max = 2): ")),2)
+lowest_tide = data_input.lowest_tide#cmToStep(eval(input("Enter height of lowest tide from ground in cm (test = 2): ")))
+tide_range = data_input.tide_range#cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30): ")))
+multiplier = data_input.multiplier#eval(input("Enter wave multiplier: "))
+speed_multiplier = data_input.speed_multiplier#min(eval(input("Enter speed multiplier  (0.8, 1, max = 2): ")),2)
 speed_steps_per_minute_pre = 40
 speed_steps_per_minute = round(speed_steps_per_minute_pre*speed_multiplier)
 
