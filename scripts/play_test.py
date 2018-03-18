@@ -36,5 +36,5 @@ while (Motor0.isBusy()|Motor1.isBusy()):
     continue
 
 
-Motor0.setCurrent(hold = 0, run = 0, acc =0, dec = 0)
-Motor1.setCurrent(hold = 0, run = 0, acc =0, dec = 0)
+Motor0.setCurrent(hold = 100, run = 0, acc =0, dec = 0)
+Motor1.setCurrent(hold = 100, run = 0, acc =0, dec = 0)
