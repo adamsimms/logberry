@@ -9,6 +9,7 @@ import random
 import data_input
 import gallery_timings
 
+
 def cmToStep(cm):
     return (round(cm * 200 / 9))
 
@@ -232,7 +233,8 @@ def tide_data_refresh():
         except:
             continue
     (current_from, current_to) = (
-    tide_control(float(tide_data.tail(2).head(1)['Height'])), tide_control(float(tide_data.tail(2).tail(1)['Height'])))
+        tide_control(float(tide_data.tail(2).head(1)['Height'])),
+        tide_control(float(tide_data.tail(2).tail(1)['Height'])))
     (current_from_position, current_to_position) = (round(current_from * tide_range), round(current_to * tide_range))
     print('Actual From (m): ' + str(current_from) + ' Actual To (m): ' + str(current_to))
     print('Motor Position From : ' + str(current_from_position) + ' Motor Position To : ' + str(current_to_position))
@@ -306,7 +308,7 @@ tide_data = pd.read_csv('tide_data.csv')
 time_of_new_tide_data = time.time()
 (current_from, current_to) = (float(tide_data.tail(2).head(1)['Height']), float(tide_data.tail(2).tail(1)['Height']))
 (current_from_position, current_to_position) = (
-round(float(current_from) * tide_range), round(float(current_to) * tide_range))
+    round(float(current_from) * tide_range), round(float(current_to) * tide_range))
 (previous_from_position, previous_to_position) = (current_from_position, current_to_position)
 tide_distance_count = current_to_position - current_from_position
 time.sleep(.5)
@@ -339,7 +341,6 @@ while True:
                 print(gallery_timings.show_offline_message())
                 time.sleep(60)
                 continue
-
 
     except KeyboardInterrupt:
 
