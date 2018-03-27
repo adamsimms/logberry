@@ -331,6 +331,8 @@ while True:
                 closing_action()
                 continue
             else:
+                Motor0.setCurrent(hold=0, run=0, acc=0, dec=0)
+                Motor1.setCurrent(hold=0, run=0, acc=0, dec=0)
                 continue
 
 
