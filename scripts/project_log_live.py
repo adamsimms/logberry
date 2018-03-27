@@ -323,6 +323,7 @@ is_motor_on = 0
 while True:
     try:
         if gallery_timings.are_we_open_yet():
+            print("gallery is open")
             tide_data_refresh()
             is_motor_on = 1
             continue
