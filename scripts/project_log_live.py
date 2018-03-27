@@ -331,6 +331,7 @@ while True:
             if is_motor_on == 1:
                 print("gallery is closing now")
                 closing_action()
+                is_motor_on = 0
                 continue
             else:
                 Motor0.setCurrent(hold=0, run=0, acc=0, dec=0)

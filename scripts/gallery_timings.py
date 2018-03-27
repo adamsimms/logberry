@@ -9,7 +9,7 @@ timings = {1: ['11:30', '18:30', "Tuesday"],
 
 def are_we_open_yet():
     current_weekday = datetime.weekday(datetime.now())
-    current_time = datetime.now().strftime('%H:%m')
+    current_time = datetime.now().strftime('%H:%M')
     if current_weekday in timings.keys():
         opening_times = timings[current_weekday]
         start_at = opening_times[0]
@@ -23,7 +23,7 @@ def are_we_open_yet():
 
 def next_opening_time():
     current_weekday = datetime.weekday(datetime.now())
-    current_time = datetime.now().strftime('%H:%m')
+    current_time = datetime.now().strftime('%H:%M')
     open_weekdays = timings.keys()
     if current_weekday in open_weekdays:
         opening_times_today = timings[current_weekday]
@@ -34,5 +34,5 @@ def next_opening_time():
             return "{}, {}".format(opening_times_next[2], opening_times_next[0])
 
 def show_offline_message():
-    current_time = datetime.now().strftime('%A, %H:%m')
+    current_time = datetime.now().strftime('%A, %H:%M')
     return "Gallery is closed now at {}. Next show at {}".format(current_time, next_opening_time())
