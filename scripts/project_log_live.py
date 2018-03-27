@@ -335,7 +335,7 @@ while True:
             else:
                 Motor0.setCurrent(hold=0, run=0, acc=0, dec=0)
                 Motor1.setCurrent(hold=0, run=0, acc=0, dec=0)
-                print("Gallery is closed now. Next show at {}".format(gallery_timings.next_opening_time()))
+                print(gallery_timings.show_offline_message())
                 time.sleep(60)
                 continue
 

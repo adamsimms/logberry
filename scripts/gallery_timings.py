@@ -32,3 +32,7 @@ def next_opening_time():
             return "{}, {}".format(opening_times_today[2], opening_times_today[0])
         elif current_time > opening_times_today[1]:
             return "{}, {}".format(opening_times_next[2], opening_times_next[0])
+
+def show_offline_message():
+    current_time = datetime.now().strftime('%A, %H:%m')
+    return "Gallery is closed now at {}. Next show at {}".format(current_time, next_opening_time())
