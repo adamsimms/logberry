@@ -35,7 +35,7 @@ def motorReset(Motor_name=Motor0):
 
 def off(Motor_name=Motor0):
     motorReset(Motor_name)
-    Motor_name.setCurrent(hold=100, run=100, acc=100, dec=100)
+    Motor_name.setCurrent(hold=0, run=0, acc=0, dec=0)
 
 
 def closing_action():
@@ -353,8 +353,8 @@ while True:
                 is_motor_on = 0
                 continue
             else:
-                Motor0.setCurrent(hold=100, run=100, acc=100, dec=100)
-                Motor1.setCurrent(hold=100, run=100, acc=100, dec=100)
+                Motor0.setCurrent(hold=100, run=0, acc=0, dec=0)
+                Motor1.setCurrent(hold=100, run=0, acc=0, dec=0)
                 print(gallery_timings.show_offline_message())
                 time.sleep(60)
                 continue
