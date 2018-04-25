@@ -15,6 +15,13 @@ Configure log position manually in CM (-10,15):
 
 - `cd ~/logberry/scripts && python3 play_test.py`
 
+# Auto-start on Raspberry Pi Boot:
+Add the following lines to `sudo nano /etc/rc.local` before `exit 0`
+- `(sleep 60
+python3 /home/pi/logberry/scripts/live_data_stream.py) &`
+- `(sleep 120
+python3 /home/pi/logberry/scripts/project_log_live.py) &`
+
 # Hardware
 
 - [Raspberry Pi 3 Model B:](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
