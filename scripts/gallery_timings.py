@@ -32,7 +32,7 @@ def next_opening_day(timings=timings):
             else:
                 continue
         else:
-            return min(open_days)
+            return timings[min(open_days)]
 
 def next_opening_time():
     current_weekday = datetime.weekday(datetime.now())
