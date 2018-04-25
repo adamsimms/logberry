@@ -277,11 +277,11 @@ motorReset(Motor1)
 Motor0.setCurrent(hold=100, run=100, acc=100, dec=100)
 Motor1.setCurrent(hold=100, run=100, acc=100, dec=100)
 
-Motor0.setDecel(40)
-Motor1.setDecel(40)
+Motor0.setDecel(100)
+Motor1.setDecel(100)
 
-Motor0.setAccel(40)
-Motor1.setAccel(40)
+Motor0.setAccel(100)
+Motor1.setAccel(100)
 
 Motor0.setMaxSpeed(speed_steps_per_minute)
 Motor1.setMaxSpeed(speed_steps_per_minute)
