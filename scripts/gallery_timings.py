@@ -21,6 +21,18 @@ def are_we_open_yet():
     else:
         return False
 
+def next_opening_day(timings=timings):
+    open_days = list(timings.keys())
+    open_days.sort()
+    current_weekday = datetime.weekday(datetime.now())
+    for day in open_days:
+        if max(open_days) > current_weekday:
+            if day > current_weekday:
+                return timings[day]
+            else:
+                continue
+        else:
+            return timings[min(open_days)]
 
 def next_opening_time():
     current_weekday = datetime.weekday(datetime.now())
@@ -33,7 +45,9 @@ def next_opening_time():
             return "{}, {}".format(opening_times_today[2], opening_times_today[0])
         elif current_time > opening_times_today[1]:
             return "{}, {}".format(opening_times_next[2], opening_times_next[0])
-
+    else:
+        opening_times_next = next_opening_day(timings=timings)
+        return "{}, {}".format(opening_times_next[2], opening_times_next[0])
 
 def show_offline_message():
     current_time = datetime.now().strftime('%A, %H:%M')
