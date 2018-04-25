@@ -273,58 +273,75 @@ speed_steps_per_minute = round(speed_steps_per_minute_pre * speed_multiplier)
 # start and position motor
 motorReset(Motor0)
 motorReset(Motor1)
+# SCRIPT OF EVENTS
+# start and position motor
 
-Motor0.setCurrent(hold=100, run=100, acc=100, dec=100)
-Motor1.setCurrent(hold=100, run=100, acc=100, dec=100)
 
-Motor0.setDecel(100)
-Motor1.setDecel(100)
+def starting_act():
+    global tide_data
+    global previous_from_position
+    global previous_to_position
+    global current_from_position
+    global current_to_position
+    global tide_distance_count
+    global time_of_new_tide_data
+    global global_wave_timing
 
-Motor0.setAccel(100)
-Motor1.setAccel(100)
+    Motor0.setCurrent(hold=100, run=100, acc=100, dec=100)
+    Motor1.setCurrent(hold=100, run=100, acc=100, dec=100)
 
-Motor0.setMaxSpeed(speed_steps_per_minute)
-Motor1.setMaxSpeed(speed_steps_per_minute)
+    Motor0.setDecel(100)
+    Motor1.setDecel(100)
 
-Motor0.move(lowest_tide)
-Motor1.move(lowest_tide)
-while (Motor0.isBusy() | Motor1.isBusy()):
-    continue
-Motor0.setAsHome()
-Motor1.setAsHome()
-print("At lowest tide level")
-time.sleep(1.5)
+    Motor0.setAccel(100)
+    Motor1.setAccel(100)
 
-Motor0.move(tide_range)
-Motor1.move(tide_range)
-while (Motor0.isBusy() | Motor1.isBusy()):
-    continue
-print("At highest tide level")
-time.sleep(1.5)
+    Motor0.setMaxSpeed(speed_steps_per_minute)
+    Motor1.setMaxSpeed(speed_steps_per_minute)
 
-# Load tide data to reach current tide position
-global_wave_timing = []
-tide_data = pd.read_csv('tide_data.csv')
-time_of_new_tide_data = time.time()
-(current_from, current_to) = (float(tide_data.tail(2).head(1)['Height']), float(tide_data.tail(2).tail(1)['Height']))
-(current_from_position, current_to_position) = (
-    round(float(current_from) * tide_range), round(float(current_to) * tide_range))
-(previous_from_position, previous_to_position) = (current_from_position, current_to_position)
-tide_distance_count = current_to_position - current_from_position
-time.sleep(.5)
-Motor0.goTo(current_from_position)
-Motor1.goTo(current_from_position)
-while (Motor0.isBusy() | Motor1.isBusy()):
-    continue
-time.sleep(.5)
-wave_sequence(tide_distance=0, number_of_waves=1)
-time.sleep(1)
+    Motor0.move(lowest_tide)
+    Motor1.move(lowest_tide)
+    while (Motor0.isBusy() | Motor1.isBusy()):
+        continue
+    Motor0.setAsHome()
+    Motor1.setAsHome()
+    print("At lowest tide level")
+    time.sleep(1.5)
 
+    Motor0.move(tide_range)
+    Motor1.move(tide_range)
+    while (Motor0.isBusy() | Motor1.isBusy()):
+        continue
+    print("At highest tide level")
+    time.sleep(1.5)
+
+    # Load tide data to reach current tide position
+    global_wave_timing = []
+    tide_data = pd.read_csv('tide_data.csv')
+    time_of_new_tide_data = time.time()
+    (current_from, current_to) = (float(tide_data.tail(2).head(1)['Height']), float(tide_data.tail(2).tail(1)['Height']))
+    (current_from_position, current_to_position) = (
+        round(float(current_from) * tide_range), round(float(current_to) * tide_range))
+    (previous_from_position, previous_to_position) = (current_from_position, current_to_position)
+    tide_distance_count = current_to_position - current_from_position
+    time.sleep(.5)
+    Motor0.goTo(current_from_position)
+    Motor1.goTo(current_from_position)
+    while (Motor0.isBusy() | Motor1.isBusy()):
+        continue
+    time.sleep(.5)
+    wave_sequence(tide_distance=0, number_of_waves=1)
+    time.sleep(1)
+
+
+starting_act()
 is_motor_on = 0
 ###MAIN ACTION
 while True:
     try:
         if gallery_timings.are_we_open_yet():
+            if is_motor_on == 0:
+                starting_act()
             print("gallery is open")
             tide_data_refresh()
             is_motor_on = 1
