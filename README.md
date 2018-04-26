@@ -15,12 +15,23 @@ Configure log position manually in CM (-10,15):
 
 - `cd ~/logberry/scripts && python3 play_test.py`
 
-# Auto-start on Raspberry Pi Boot:
+# Auto-start on Raspberry Pi Boot
 Add the following lines to `sudo nano /etc/rc.local` before `exit 0`
 - `(sleep 60
 python3 /home/pi/logberry/scripts/live_data_stream.py) &`
 - `(sleep 120
 python3 /home/pi/logberry/scripts/project_log_live.py) &`
+
+# Reboot Raspberry Pi Remotely
+_The log will reset position and restart in approximately 3 minutes._
+
+1. Go to [www.dataplicity.com](http://www.dataplicity.com) 
+    - Username: `hello@adamsim.ms`
+    - Password: `driftwood`
+2. Tap **logberry @concordia**
+3. Type `su pi`
+4. Password: `10g63rry`
+5. Type `sudo reboot` 
 
 # Hardware
 
