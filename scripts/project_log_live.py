@@ -30,8 +30,8 @@ def motorReset(Motor_name=Motor0):
     Motor_name.resetDev()
     Motor_name.setMicroSteps(1)
 
+#   Motor_name.free()
 
-#    Motor_name.free()
 
 def off(Motor_name=Motor0):
     motorReset(Motor_name)
@@ -120,7 +120,7 @@ def time_elapsed(time_value):
 
 def wave_sequence(tide_distance, number_of_waves=1):
     loop_count = 0
-    #    try:
+    # try:
     while True:
         try:
             wave_data = pd.read_csv("wave_status.csv")
@@ -270,13 +270,10 @@ speed_steps_per_minute_pre = 40
 speed_steps_per_minute = round(speed_steps_per_minute_pre * speed_multiplier)
 
 # SCRIPT OF EVENTS
-# start and position motor
 motorReset(Motor0)
 motorReset(Motor1)
-# SCRIPT OF EVENTS
+
 # start and position motor
-
-
 def starting_act():
     global tide_data
     global previous_from_position
@@ -334,8 +331,9 @@ def starting_act():
     time.sleep(1)
 
 
-starting_act()
+#starting_act()
 is_motor_on = 0
+
 ###MAIN ACTION
 while True:
     try:
@@ -353,8 +351,8 @@ while True:
                 is_motor_on = 0
                 continue
             else:
-                Motor0.setCurrent(hold=100, run=0, acc=0, dec=0)
-                Motor1.setCurrent(hold=100, run=0, acc=0, dec=0)
+                Motor0.setCurrent(hold=0, run=0, acc=0, dec=0)
+                Motor1.setCurrent(hold=0, run=0, acc=0, dec=0)
                 print(gallery_timings.show_offline_message())
                 time.sleep(60)
                 continue
