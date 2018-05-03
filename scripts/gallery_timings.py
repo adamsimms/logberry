@@ -1,10 +1,10 @@
 from datetime import datetime
 
-timings = {1: ['11:30', '18:30', "Tuesday"],
-           2: ['11:30', '18:30', "Wednesday"],
-           3: ['11:30', '18:30', "Thursday"],
-           4: ['11:30', '18:30', "Friday"],
-           5: ['11:30', '18:30', "Saturday"]}
+timings = {1: ['12:00', '17:55', "Tuesday"],
+           2: ['12:00', '17:55', "Wednesday"],
+           3: ['12:00', '19:00', "Thursday"],
+           4: ['12:00', '17:55', "Friday"],
+           5: ['12:00', '16:55', "Saturday"]}
 
 
 def are_we_open_yet():
