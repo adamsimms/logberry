@@ -1,0 +1,7 @@
+# Add the following lines to `/etc/rc.local` before `exit 0`
+# `sudo nano /etc/rc.local`
+
+(sleep 60
+python3 /home/pi/logberry/scripts/live_data_stream.py) &
+(sleep 120
+python3 /home/pi/logberry/scripts/project_log_live.py) &
