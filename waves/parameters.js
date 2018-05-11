@@ -7,7 +7,7 @@ var INITIAL_SIZE = 250,
 var TILES = 1.5;
 
 // Visual parameters
-var CLEAR_COLOR = [10.0, 1.0, 1.0, 0.0],
+var CLEAR_COLOR = [10.0, 1.0, 1.0, 1.0],
     GEOMETRY_ORIGIN = [-1000.0, -1000.0],
     SUN_DIRECTION = [-1.0, 1.0, 1.0], //points towards the sun, y is up
     OCEAN_COLOR = [0.004, 0.016, 0.047],
