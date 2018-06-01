@@ -12,12 +12,19 @@ Configure log position manually in CM (-10,15):
 
 - `cd ~/logberry/scripts && python3 play_test.py`
 
-## Auto-start on Raspberry Pi Boot
+See what Python processes are running: 
+- `ps -ef | grep python`
+
+## Auto-start scripts on Raspberry Pi Boot
 Add the following lines to `sudo nano /etc/rc.local` before `exit 0`
 - `(sleep 60
 python3 /home/pi/logberry/scripts/live_data_stream.py) &`
 - `(sleep 120
 python3 /home/pi/logberry/scripts/project_log_live.py) &`
+
+## Auto-reboot Raspberry Pi at Set Interval
+Schedule a cron task via `crontab -e`.
+- Add `45 11 * * * sudo reboot` to reboot Raspberry Pi at 11:45 daily.
 
 ## Reboot Raspberry Pi Remotely
 _The log will reset position and restart in approximately 3 minutes._
