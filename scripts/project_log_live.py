@@ -258,7 +258,10 @@ def tide_data_refresh():
                 wave_sequence(tide_distance=tide_pace)
             except:
                 print("Error in standard wave. Running blank wave to kill time...")
-                wave_sequence(tide_distance=0)
+                #wave_sequence(tide_distance=0)
+                closing_action()
+                time.sleep(30)
+                starting_act()
 
 
 # inputs
