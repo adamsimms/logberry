@@ -26,17 +26,6 @@ python3 /home/pi/logberry/scripts/project_log_live.py) &`
 Schedule a cron task via `crontab -e`.
 - Add `45 11 * * * sudo reboot` to reboot Raspberry Pi at 11:45 daily.
 
-## Reboot Raspberry Pi Remotely
-_The log will reset position and restart in approximately 3 minutes._
-
-1. Go to [www.dataplicity.com](http://www.dataplicity.com) 
-    - Username: `hello@adamsim.ms`
-    - Password: `driftwood`
-2. Tap **logberry @concordia**
-3. Type `su pi`
-4. Password: `10g63rry`
-5. Type `sudo reboot` 
-
 ## Hardware
 
 - [Raspberry Pi 3 Model B:](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
