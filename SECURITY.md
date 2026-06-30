@@ -31,10 +31,6 @@ If you do not have a contact address, open a [GitHub security advisory](https://
 
 Use `config/data_input.py` and `config/gallery_hours.py` for install-specific values. Keep machine-local overrides out of git.
 
-## Past incidents
-
-Secrets were previously committed to this repository (`scratchpad.md`, `concordia-wifi/`). They have been removed and the git history was rewritten. **If you ever had access to the old repository, rotate any credentials that may have been exposed.**
-
 ## Deployment guidance
 
 - Do not expose the Pi's SSH port to the public internet without key-based auth and a firewall.
