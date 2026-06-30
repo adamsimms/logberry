@@ -7,6 +7,8 @@ Wants=network-online.target
 Type=simple
 User=pi
 WorkingDirectory=/home/pi/driftwood/scripts
+# Stagger startup after boot (replaces old rc.local sleep)
+ExecStartPre=/bin/sleep 60
 ExecStart=/usr/bin/python3 /home/pi/driftwood/scripts/live_data_stream.py
 Restart=on-failure
 RestartSec=30

@@ -4,6 +4,22 @@ Kinetic installation software for a Raspberry Pi that drives stepper motors in r
 
 Deploy the repo to `/home/pi/driftwood` on the Pi.
 
+## Install
+
+From the Pi (clones from GitHub):
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/adamsimms/logberry/master/deploy/install.sh | bash
+```
+
+Or from a local checkout:
+
+```bash
+./deploy/install.sh --from-source
+```
+
+The installer renames `~/logberry` to `~/driftwood` if needed, moves any legacy CSVs from `scripts/` to `data/`, and installs Python dependencies.
+
 ## Architecture
 
 ```mermaid
@@ -23,14 +39,9 @@ flowchart LR
 
 ## Quick start
 
-Install Python dependencies (on the Pi):
-
-```bash
-cd ~/driftwood
-pip3 install -r requirements.txt
-```
-
 Install the [SlushEngine Python library](https://github.com/Roboteurs/slushengine) separately — it requires the motor driver hardware.
+
+If you have not run the [install step](#install) yet, do that first.
 
 Start live tide and wave data:
 

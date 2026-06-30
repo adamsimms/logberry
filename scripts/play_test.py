@@ -11,7 +11,7 @@ movement = ast.literal_eval(input("Enter (left_motor_in_cm,right_motor_in_cm): "
 m0_steps = cmToStep(float(movement[0]))
 m1_steps = cmToStep(float(movement[1]))
 
-SlushEngine = Slush.sBoard()
+Slush.sBoard()
 
 Motor0 = Slush.Motor(0)
 Motor1 = Slush.Motor(3)
@@ -33,7 +33,7 @@ Motor1.setMaxSpeed(40)
 Motor0.move(m0_steps)
 Motor1.move(m1_steps)
 
-while Motor0.isBusy() | Motor1.isBusy():
+while Motor0.isBusy() or Motor1.isBusy():
     continue
 
 Motor0.setCurrent(hold=100, run=0, acc=0, dec=0)
