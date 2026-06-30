@@ -16,8 +16,3 @@ TIDE_STATION_NAME = "Bonavista"
 # The original Mouth of Placentia buoy was decommissioned in 2022; Holyrood Buoy 2 is the nearest active source.
 WAVE_ERDDAP_DATASET = "SMA_Holyrood_Buoy2"
 WAVE_DATASET_NAME = "Holyrood Buoy 2"
-
-import os
-
-SMARTATLANTIC_USER = os.environ.get("DRIFTWOOD_WAVE_USER", "Driftwood")
-SMARTATLANTIC_EMAIL = os.environ.get("DRIFTWOOD_WAVE_EMAIL", "driftwood@example.com")

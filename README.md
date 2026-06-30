@@ -2,7 +2,18 @@
 
 Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Newfoundland.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Deploy the repo to `/home/pi/driftwood` on the Pi.
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to set up, develop, and submit changes |
+| [SECURITY.md](SECURITY.md) | Reporting vulnerabilities and what not to commit |
+| [CHANGELOG.md](CHANGELOG.md) | Notable project changes |
+| [viz/README.md](viz/README.md) | Optional browser visualization |
 
 ## Install
 
@@ -20,6 +31,8 @@ Or from a local checkout:
 
 The installer renames `~/logberry` to `~/driftwood` if needed, moves any legacy CSVs from `scripts/` to `data/`, and installs Python dependencies.
 
+**Requirements:** Python 3.10+, Raspberry Pi OS (or similar Linux) on the Pi. Tested with Raspberry Pi 3 Model B.
+
 ## Architecture
 
 ```mermaid
@@ -36,13 +49,24 @@ flowchart LR
 - **`scripts/project_log_live.py`** — thin entry point; motor logic lives in `motor_*.py`
 - **`scripts/check_apis.py`** — verify tide and wave data sources
 - **`scripts/play_test.py`** — manual motor positioning for calibration
-- **`viz/`** — optional WebGL ocean wave simulation (browser only, not used by the Pi)
+- **`viz/`** — optional WebGL ocean simulation (browser only, not used by the Pi)
+
+### Data sources
+
+| Data | Source | Default |
+|------|--------|---------|
+| Tide | [CHS Integrated Water Level System (IWLS)](https://api-iwls.dfo-mpo.gc.ca) | Bonavista (station 00990) |
+| Waves | [SmartAtlantic ERDDAP](https://www.smartatlantic.ca/erddap/index.html) | Holyrood Buoy 2 |
+
+> **Note:** The original Mouth of Placentia Bay buoy dataset was decommissioned in 2022. The default wave source is the nearest active SmartAtlantic buoy (Holyrood Buoy 2). Change `WAVE_ERDDAP_DATASET` in `config/data_input.py` to use a different dataset.
 
 ## Quick start
 
 Install the [SlushEngine Python library](https://github.com/Roboteurs/slushengine) separately — it requires the motor driver hardware.
 
 If you have not run the [install step](#install) yet, do that first.
+
+Verify data sources:
 
 ```bash
 cd ~/driftwood/scripts && python3 check_apis.py
@@ -88,11 +112,6 @@ Edit `config/data_input.py` on the Pi:
 
 Gallery hours are defined in `config/gallery_hours.py`. Update `GALLERY_HOURS` for your venue schedule (weekday keys: Monday=0 … Sunday=6).
 
-SmartAtlantic request identity can be overridden with environment variables:
-
-- `DRIFTWOOD_WAVE_USER`
-- `DRIFTWOOD_WAVE_EMAIL`
-
 ## Auto-start on boot (systemd)
 
 Copy the unit files and enable them:
@@ -111,6 +130,18 @@ Check status:
 sudo systemctl status driftwood-data driftwood-motors
 ```
 
+## Troubleshooting
+
+| Problem | Things to try |
+|---------|----------------|
+| `check_apis.py` tide fails | Confirm network access; verify `TIDE_STATION_ID` in `config/data_input.py`; check [IWLS API status](https://api-iwls.dfo-mpo.gc.ca) |
+| `check_apis.py` wave fails | The ERDDAP dataset may be offline or decommissioned — try another dataset from [SmartAtlantic ERDDAP](https://www.smartatlantic.ca/erddap/index.html) and update `WAVE_ERDDAP_DATASET` |
+| Empty or missing CSVs in `data/` | Run `live_data_stream.py` and wait for a successful fetch; check `check_apis.py` first |
+| Motors do not move | Confirm SlushEngine is installed; run `play_test.py` for manual calibration; check motor power and wiring |
+| `ModuleNotFoundError: Slush` | Install the [SlushEngine Python library](https://github.com/Roboteurs/slushengine) on the Pi |
+| Gallery closed message | Update `config/gallery_hours.py` for your schedule |
+| Permission errors on Pi | Ensure scripts run as the `pi` user; systemd units assume `/home/pi/driftwood` |
+
 ## Scheduled reboot (optional)
 
 Schedule a cron task via `crontab -e`:
@@ -121,7 +152,7 @@ Schedule a cron task via `crontab -e`:
 
 ## Wi-Fi setup
 
-Configure network access on the Pi through your OS network manager (e.g. NetworkManager for eduroam). Do not commit credentials or machine-specific network config to this repo.
+Configure network access on the Pi through your OS network manager (e.g. NetworkManager for eduroam). Do not commit credentials or machine-specific network config to this repo. See [SECURITY.md](SECURITY.md).
 
 ## Hardware
 
@@ -138,7 +169,11 @@ Configure network access on the Pi through your OS network manager (e.g. Network
 
 GitHub: [github.com/adamsimms/logberry](https://github.com/adamsimms/logberry) (project name: **Driftwood**)
 
-To rename the repository to `driftwood` in GitHub: **Settings → General → Repository name**.
+Suggested GitHub settings (update manually in **Settings → General**):
+
+- **Description:** `Driftwood — kinetic sculpture driven by live Newfoundland tide and wave data`
+- **Topics:** `kinetic-art`, `raspberry-pi`, `installation-art`, `newfoundland`, `python`
+- **Repository name:** rename to `driftwood` when ready
 
 ## Repository layout
 
@@ -154,3 +189,11 @@ driftwood/
 ├── scripts/               # Pi control software
 └── viz/                   # optional browser visualization
 ```
+
+## License
+
+MIT License — see [LICENSE](LICENSE). Copyright (c) 2017 Adam Simms.
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
