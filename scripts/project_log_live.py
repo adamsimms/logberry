@@ -23,10 +23,8 @@ def cmToStep(cm):
 tide.get_tide_data()
 wave.get_wave_data()
 
-# initalizes the board and all its functions
-SlushEngine = Slush.sBoard()
-
-# initalizes the motor on the board
+# Initialize the SlushEngine board and motors
+Slush.sBoard()
 Motor0 = Slush.Motor(0)
 Motor1 = Slush.Motor(3)
 
@@ -34,13 +32,6 @@ Motor1 = Slush.Motor(3)
 def motorReset(Motor_name=Motor0):
     Motor_name.resetDev()
     Motor_name.setMicroSteps(1)
-
-#   Motor_name.free()
-
-
-def off(Motor_name=Motor0):
-    motorReset(Motor_name)
-    Motor_name.setCurrent(hold=0, run=0, acc=0, dec=0)
 
 
 def closing_action():
@@ -58,13 +49,13 @@ def closing_action():
     Motor1.setMaxSpeed(speed_steps_per_minute)
     Motor0.goHome()
     Motor1.goHome()
-    while (Motor0.isBusy() | Motor1.isBusy()):
+    while Motor0.isBusy() or Motor1.isBusy():
         continue
     print("Lowest_tide_at " + str(Motor0.getPosition()) + " " + str(Motor1.getPosition()))
     time.sleep(2)
     Motor0.goTo(-lowest_tide)
     Motor1.goTo(-lowest_tide)
-    while (Motor0.isBusy() | Motor1.isBusy()):
+    while Motor0.isBusy() or Motor1.isBusy():
         continue
     Motor0.setCurrent(hold=0, run=0, acc=0, dec=0)
     Motor1.setCurrent(hold=0, run=0, acc=0, dec=0)
@@ -103,17 +94,17 @@ def sleepDelayCount(step):
     step = abs(step)
     if (step < cmToStep(1.67)):
         return .15
-    elif (step >= cmToStep(1.67)) & (step < cmToStep(3.33)):
+    elif step >= cmToStep(1.67) and step < cmToStep(3.33):
         return .25
-    elif (step >= cmToStep(3.33)) & (step < cmToStep(3.83)):
+    elif step >= cmToStep(3.33) and step < cmToStep(3.83):
         return .35
-    elif (step >= cmToStep(3.83)) & (step < cmToStep(4.67)):
+    elif step >= cmToStep(3.83) and step < cmToStep(4.67):
         return .45
-    elif (step >= cmToStep(4.67)) & (step < cmToStep(5.83)):
+    elif step >= cmToStep(4.67) and step < cmToStep(5.83):
         return .55
-    elif (step >= cmToStep(5.83)) & (step < cmToStep(6.67)):
+    elif step >= cmToStep(5.83) and step < cmToStep(6.67):
         return .6
-    elif (step >= cmToStep(6.67)) & (step < cmToStep(7.5)):
+    elif step >= cmToStep(6.67) and step < cmToStep(7.5):
         return .7
     else:
         return .8
@@ -247,14 +238,14 @@ def tide_data_refresh():
     print('Motor Position From : ' + str(current_from_position) + ' Motor Position To : ' + str(current_to_position))
     tide_distance_count = current_to_position - current_from_position
 
-    if (current_from_position != previous_from_position) & (current_to_position != previous_to_position):
+    if current_from_position != previous_from_position and current_to_position != previous_to_position:
         time_of_new_tide_data = time.time()
-        if (abs(Motor0.getPosition() - current_from_position) != 0) | (
+        if abs(Motor0.getPosition() - current_from_position) != 0 or (
                 abs(Motor1.getPosition() - current_from_position) != 0):
             coverup_distance = current_from_position - Motor0.getPosition()
             wave_sequence(number_of_waves=5, tide_distance=coverup_distance)
     elif (current_to_position == previous_to_position):
-        if abs(Motor0.getPosition() - current_to_position) == 0 | abs(Motor1.getPosition() - current_to_position) == 0:
+        if abs(Motor0.getPosition() - current_to_position) == 0 or abs(Motor1.getPosition() - current_to_position) == 0:
             wave_sequence(tide_distance=0)
         else:
             try:
@@ -282,7 +273,7 @@ speed_steps_per_minute = round(speed_steps_per_minute_pre * speed_multiplier)
 motorReset(Motor0)
 motorReset(Motor1)
 
-# start and position motor
+
 def starting_act():
     global tide_data
     global previous_from_position
@@ -307,7 +298,7 @@ def starting_act():
 
     Motor0.move(lowest_tide)
     Motor1.move(lowest_tide)
-    while (Motor0.isBusy() | Motor1.isBusy()):
+    while Motor0.isBusy() or Motor1.isBusy():
         continue
     Motor0.setAsHome()
     Motor1.setAsHome()
@@ -316,7 +307,7 @@ def starting_act():
 
     Motor0.move(tide_range)
     Motor1.move(tide_range)
-    while (Motor0.isBusy() | Motor1.isBusy()):
+    while Motor0.isBusy() or Motor1.isBusy():
         continue
     print("At highest tide level")
     time.sleep(1.5)
@@ -333,17 +324,15 @@ def starting_act():
     time.sleep(.5)
     Motor0.goTo(current_from_position)
     Motor1.goTo(current_from_position)
-    while (Motor0.isBusy() | Motor1.isBusy()):
+    while Motor0.isBusy() or Motor1.isBusy():
         continue
     time.sleep(.5)
     wave_sequence(tide_distance=0, number_of_waves=1)
     time.sleep(1)
 
 
-#starting_act()
 is_motor_on = 0
 
-###MAIN ACTION
 while True:
     try:
         if gallery_timings.are_we_open_yet():
@@ -372,7 +361,7 @@ while True:
         if next_step == 'N':
             Motor0.goTo(current_from_position)
             Motor1.goTo(current_from_position)
-            while (Motor0.isBusy() | Motor1.isBusy()):
+            while Motor0.isBusy() or Motor1.isBusy():
                 continue
             print("Starting new session")
             continue
@@ -380,7 +369,3 @@ while True:
             closing_action()
             print("Ending now")
             break
-
-    # else:
-    #     print("Unknown Error")
-    #     continue
