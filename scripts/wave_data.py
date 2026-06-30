@@ -1,32 +1,40 @@
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from io import StringIO
 from pathlib import Path
-from urllib.parse import quote
 
 import pandas as pd
+import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from config import data_input
 from paths import WAVE_STATUS_CSV
 
+ERDDAP_BASE = "https://www.smartatlantic.ca/erddap/tabledap"
+
 
 def get_wave_data():
-    now = datetime.now()
-    start_date = now - timedelta(days=1)
-    end_date = now
+    now = datetime.now(timezone.utc)
+    start = now - timedelta(days=1)
+    end = now
 
-    user = quote(data_input.SMARTATLANTIC_USER)
-    email = quote(data_input.SMARTATLANTIC_EMAIL)
     url = (
-        "http://www.smartatlantic.ca/Home/doNewRequest.php"
-        "?sel=timestamp%2Clat%2Clon%2Cwave_ht_max%2Cwave_ht_sig%2Cwave_period_max%2C"
-        f"&db=smb_mouth_of_placentia&title=Mouth%20of%20Placentia%20Bay"
-        f"&user={user}&email={email}"
-        f"&start={start_date.strftime('%Y-%m-%d')}&end={end_date.strftime('%Y-%m-%d')}"
+        f"{ERDDAP_BASE}/{data_input.WAVE_ERDDAP_DATASET}.csv?"
+        "time,latitude,longitude,wave_ht_max,wave_ht_sig,wave_period_max"
+        f"&time>={start.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+        f"&time<={end.strftime('%Y-%m-%dT%H:%M:%SZ')}"
     )
 
-    wave_data = pd.read_csv(url)
-    wave_data["Date & Time(UTC)"] = pd.to_datetime(wave_data["Date & Time(UTC)"])
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+    if response.text.startswith("Error"):
+        raise ValueError(response.text)
+
+    wave_data = pd.read_csv(StringIO(response.text), skiprows=[1])
+    if wave_data.empty:
+        raise ValueError(f"No wave data returned for {data_input.WAVE_DATASET_NAME}")
+
+    wave_data["time"] = pd.to_datetime(wave_data["time"])
     wave_data.columns = [
         "date_time",
         "latitude",
@@ -35,5 +43,6 @@ def get_wave_data():
         "sig_wave_height",
         "peak_wave_period",
     ]
+
     WAVE_STATUS_CSV.parent.mkdir(parents=True, exist_ok=True)
     wave_data.tail(1).to_csv(WAVE_STATUS_CSV, index=False)

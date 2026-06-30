@@ -14,7 +14,7 @@
 
 set -euo pipefail
 
-REPO_URL="${DRIFTWOOD_REPO_URL:-https://github.com/adamsimms/logberry.git}"
+REPO_URL="${DRIFTWOOD_REPO_URL:-https://github.com/adamsimms/driftwood.git}"
 BRANCH="${DRIFTWOOD_BRANCH:-master}"
 INSTALL_DIR="${DRIFTWOOD_INSTALL_DIR:-$HOME/driftwood}"
 LEGACY_DIR="${DRIFTWOOD_LEGACY_DIR:-$HOME/logberry}"

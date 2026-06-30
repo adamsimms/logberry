@@ -1,54 +1,52 @@
+import sys
 from datetime import datetime
+from pathlib import Path
 
-timings = {1: ['12:00', '17:55', "Tuesday"],
-           2: ['12:00', '17:55', "Wednesday"],
-           3: ['12:00', '17:55', "Thursday"],
-           4: ['12:00', '17:55', "Friday"],
-           5: ['12:00', '16:55', "Saturday"],}
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from config.gallery_hours import GALLERY_HOURS
 
 
 def are_we_open_yet():
-    current_weekday = datetime.weekday(datetime.now())
-    current_time = datetime.now().strftime('%H:%M')
-    if current_weekday in timings.keys():
-        opening_times = timings[current_weekday]
-        start_at = opening_times[0]
-        end_at = opening_times[1]
-        if (current_time >= start_at) and (current_time <= end_at):
-            return True
-        else:
-            return False
-    else:
+    current_weekday = datetime.now().weekday()
+    current_time = datetime.now().strftime("%H:%M")
+    hours = GALLERY_HOURS.get(current_weekday)
+    if not hours:
         return False
+    return hours["open"] <= current_time <= hours["close"]
 
-def next_opening_day(timings=timings):
-    open_days = list(timings.keys())
-    open_days.sort()
-    current_weekday = datetime.weekday(datetime.now())
+
+def next_opening_day():
+    open_days = sorted(GALLERY_HOURS.keys())
+    current_weekday = datetime.now().weekday()
     for day in open_days:
         if max(open_days) > current_weekday:
             if day > current_weekday:
-                return timings[day]
-            else:
-                continue
+                return GALLERY_HOURS[day]
         else:
-            return timings[min(open_days)]
+            return GALLERY_HOURS[min(open_days)]
+    return GALLERY_HOURS[min(open_days)]
+
 
 def next_opening_time():
-    current_weekday = datetime.weekday(datetime.now())
-    current_time = datetime.now().strftime('%H:%M')
-    days_open = timings.keys()
-    if current_weekday in days_open:
-        opening_times_today = timings[current_weekday]
-        opening_times_next = timings[(current_weekday+1) if current_weekday != max(days_open) else min(days_open)]
-        if current_time < opening_times_today[0]:
-            return "{}, {}".format(opening_times_today[2], opening_times_today[0])
-        elif current_time > opening_times_today[1]:
-            return "{}, {}".format(opening_times_next[2], opening_times_next[0])
-    else:
-        opening_times_next = next_opening_day(timings=timings)
-        return "{}, {}".format(opening_times_next[2], opening_times_next[0])
+    current_weekday = datetime.now().weekday()
+    current_time = datetime.now().strftime("%H:%M")
+    open_days = sorted(GALLERY_HOURS.keys())
+
+    if current_weekday in GALLERY_HOURS:
+        today = GALLERY_HOURS[current_weekday]
+        next_day = GALLERY_HOURS[
+            (current_weekday + 1) if current_weekday != max(open_days) else min(open_days)
+        ]
+        if current_time < today["open"]:
+            return "{}, {}".format(today["label"], today["open"])
+        if current_time > today["close"]:
+            return "{}, {}".format(next_day["label"], next_day["open"])
+
+    return "{}, {}".format(next_opening_day()["label"], next_opening_day()["open"])
+
 
 def show_offline_message():
-    current_time = datetime.now().strftime('%A, %H:%M')
-    return "Gallery is closed now at {}. Next show at {}".format(current_time, next_opening_time())
+    current_time = datetime.now().strftime("%A, %H:%M")
+    return "Gallery is closed now at {}. Next show at {}".format(
+        current_time, next_opening_time()
+    )

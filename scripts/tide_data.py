@@ -1,35 +1,42 @@
-from bs4 import BeautifulSoup as bs
-import datetime
-import requests
-import pandas as pd
+import sys
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
+import pandas as pd
+import requests
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from config import data_input
 from paths import TIDE_DATA_CSV
+
+IWLS_API = "https://api-iwls.dfo-mpo.gc.ca/api/v1"
 
 
 def get_tide_data():
-    today = datetime.datetime.now()
-    url = (
-        "https://www.tides.gc.ca/eng/station"
-        f"?type=1&date={today.year}%2F{today.month}%2F{today.day}"
-        "&sid=990&tz=NDT&pres=1"
+    now = datetime.now(timezone.utc)
+    start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    end = start + timedelta(days=1)
+
+    response = requests.get(
+        f"{IWLS_API}/stations/{data_input.TIDE_STATION_ID}/data",
+        params={
+            "time-series-code": "wlp",
+            "from": start.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "to": end.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "resolution": "FIFTEEN_MINUTES",
+        },
+        timeout=30,
     )
-    response = requests.get(url, timeout=30)
     response.raise_for_status()
 
-    soup = bs(response.text, "html.parser")
-    tide_rows = []
+    records = response.json()
+    if not records:
+        raise ValueError(f"No tide data returned for {data_input.TIDE_STATION_NAME}")
 
-    for row in soup.find_all("tr"):
-        entry_data = [cell.text for cell in row.find_all("td")]
-        if len(entry_data) == 3:
-            tide_rows.append(entry_data)
+    tide_df = pd.DataFrame(records)
+    tide_df["date_time"] = pd.to_datetime(tide_df["eventDate"])
+    tide_df["Height"] = pd.to_numeric(tide_df["value"], errors="coerce")
+    final_data = tide_df[["date_time", "Height"]].dropna()
 
-    tide_df = pd.DataFrame(tide_rows, columns=["Date", "Time", "Height"])
-    tide_df[["Date", "Time"]] = tide_df[["Date", "Time"]].astype(str)
-    tide_df["date_time"] = tide_df["Date"] + " " + tide_df["Time"] + ":00"
-    tide_df["date_time"] = pd.to_datetime(tide_df["date_time"])
-    tide_df["Height"] = pd.to_numeric(tide_df["Height"], errors="coerce")
-
-    final_data = tide_df[["date_time", "Height"]]
     TIDE_DATA_CSV.parent.mkdir(parents=True, exist_ok=True)
     final_data.to_csv(TIDE_DATA_CSV, index=False)
