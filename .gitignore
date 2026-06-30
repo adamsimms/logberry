@@ -1,5 +1,15 @@
 *.secret
 
+# Runtime data (fetched live on the Pi)
+data/tide_data.csv
+data/wave_status.csv
+
+# Local notes and machine-specific config
+scratchpad.md
+concordia-wifi/
+wpa_supplicant.conf
+.env
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -28,8 +38,6 @@ wheels/
 *.egg
 
 # PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
 
@@ -77,9 +85,6 @@ target/
 
 # celery beat schedule file
 celerybeat-schedule
-
-# dotenv
-.env
 
 # virtualenv
 .venv/

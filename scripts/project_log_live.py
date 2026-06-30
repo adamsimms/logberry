@@ -1,13 +1,18 @@
-# import the required module
-import Slush
+import random
+import sys
 import time
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import Slush
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from config import data_input
+import gallery_timings
 import tide_data as tide
 import wave_data as wave
-import pandas as pd
-import numpy as np
-import random
-import data_input
-import gallery_timings
+from paths import TIDE_DATA_CSV, WAVE_STATUS_CSV
 
 
 def cmToStep(cm):
@@ -123,7 +128,7 @@ def wave_sequence(tide_distance, number_of_waves=1):
     # try:
     while True:
         try:
-            wave_data = pd.read_csv("wave_status.csv")
+            wave_data = pd.read_csv(WAVE_STATUS_CSV)
             max_wave_height = round(cmToStep(cm=float(wave_data['max_wave_height'][0])) * .8) * multiplier
             sig_wave_height = round(cmToStep(cm=float(wave_data['sig_wave_height'][0])) * .8) * multiplier
             period_damper = 0.5
@@ -138,8 +143,9 @@ def wave_sequence(tide_distance, number_of_waves=1):
             print("sig_wave_height_delay : " + str(sleepDelayCount(sig_wave_height)))
             print("diff_per_wave_delay : " + str(sleepDelayCount(diff_per_wave)))
             break
-        except:
-            continue
+        except (OSError, KeyError, IndexError, ValueError) as error:
+            print(f"Waiting for wave data: {error}")
+            time.sleep(5)
 
     while loop_count < number_of_waves:
 
@@ -228,10 +234,11 @@ def tide_data_refresh():
     Motor1.setCurrent(hold=100, run=100, acc=100, dec=100)
     while True:
         try:
-            tide_data = pd.read_csv('tide_data.csv')
+            tide_data = pd.read_csv(TIDE_DATA_CSV)
             break
-        except:
-            continue
+        except (OSError, pd.errors.EmptyDataError) as error:
+            print(f"Waiting for tide data: {error}")
+            time.sleep(5)
     (current_from, current_to) = (
         tide_control(float(tide_data.tail(2).head(1)['Height'])),
         tide_control(float(tide_data.tail(2).tail(1)['Height'])))
@@ -256,7 +263,7 @@ def tide_data_refresh():
                     (900 - time_elapsed(time_of_new_tide_data)) / global_wave_timing[-1][-1])
                 tide_pace = round(target_distance / waves_in_remaining_time)
                 wave_sequence(tide_distance=tide_pace)
-            except:
+            except (IndexError, KeyError, ZeroDivisionError, TypeError):
                 print("Error in standard wave. Running blank wave to kill time...")
                 #wave_sequence(tide_distance=0)
                 closing_action()
@@ -264,11 +271,10 @@ def tide_data_refresh():
                 starting_act()
 
 
-# inputs
-lowest_tide = data_input.lowest_tide  # cmToStep(eval(input("Enter height of lowest tide from ground in cm (test = 2): ")))
-tide_range = data_input.tide_range  # cmToStep(eval(input("Enter height between lowest tide and highest tide in cm (test = 30): ")))
-multiplier = data_input.multiplier  # eval(input("Enter wave multiplier: "))
-speed_multiplier = data_input.speed_multiplier  # min(eval(input("Enter speed multiplier  (0.8, 1, max = 2): ")),2)
+lowest_tide = data_input.lowest_tide
+tide_range = data_input.tide_range
+multiplier = data_input.multiplier
+speed_multiplier = data_input.speed_multiplier
 speed_steps_per_minute_pre = 40
 speed_steps_per_minute = round(speed_steps_per_minute_pre * speed_multiplier)
 
@@ -317,7 +323,7 @@ def starting_act():
 
     # Load tide data to reach current tide position
     global_wave_timing = []
-    tide_data = pd.read_csv('tide_data.csv')
+    tide_data = pd.read_csv(TIDE_DATA_CSV)
     time_of_new_tide_data = time.time()
     (current_from, current_to) = (float(tide_data.tail(2).head(1)['Height']), float(tide_data.tail(2).tail(1)['Height']))
     (current_from_position, current_to_position) = (

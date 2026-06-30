@@ -1,0 +1,15 @@
+[Unit]
+Description=Driftwood live tide and wave data fetcher
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/driftwood/scripts
+ExecStart=/usr/bin/python3 /home/pi/driftwood/scripts/live_data_stream.py
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
