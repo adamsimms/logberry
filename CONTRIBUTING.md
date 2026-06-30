@@ -17,8 +17,8 @@ Read these docs:
 You can work on tide/wave fetching and gallery scheduling on any machine with Python 3.10+:
 
 ```bash
-git clone https://github.com/adamsimms/logberry.git
-cd logberry
+git clone https://github.com/adamsimms/driftwood.git
+cd driftwood
 pip3 install -r requirements.txt
 python3 scripts/check_apis.py
 ```
@@ -92,4 +92,4 @@ Default tide data comes from **Bonavista** (CHS station 00990).
 
 ## Questions
 
-Open a [GitHub issue](https://github.com/adamsimms/logberry/issues) for bugs, questions, or feature ideas. Use the bug report template when applicable.
+Open a [GitHub issue](https://github.com/adamsimms/driftwood/issues) for bugs, questions, or feature ideas. Use the bug report template when applicable.

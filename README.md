@@ -20,7 +20,7 @@ Deploy the repo to `/home/pi/driftwood` on the Pi.
 From the Pi (clones from GitHub):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/adamsimms/logberry/master/deploy/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/adamsimms/driftwood/master/deploy/install.sh | bash
 ```
 
 Or from a local checkout:
@@ -167,13 +167,7 @@ Configure network access on the Pi through your OS network manager (e.g. Network
 
 ## Repository
 
-GitHub: [github.com/adamsimms/logberry](https://github.com/adamsimms/logberry) (project name: **Driftwood**)
-
-Suggested GitHub settings (update manually in **Settings → General**):
-
-- **Description:** `Driftwood — kinetic sculpture driven by live Newfoundland tide and wave data`
-- **Topics:** `kinetic-art`, `raspberry-pi`, `installation-art`, `newfoundland`, `python`
-- **Repository name:** rename to `driftwood` when ready
+GitHub: [github.com/adamsimms/driftwood](https://github.com/adamsimms/driftwood)
 
 ## Repository layout
 

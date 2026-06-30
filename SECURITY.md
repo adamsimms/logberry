@@ -18,7 +18,7 @@ Email the repository owner privately with:
 - Steps to reproduce
 - Impact assessment (if known)
 
-If you do not have a contact address, open a [GitHub security advisory](https://github.com/adamsimms/logberry/security/advisories/new) for this repository.
+If you do not have a contact address, open a [GitHub security advisory](https://github.com/adamsimms/driftwood/security/advisories/new) for this repository.
 
 ## What must never be committed
 

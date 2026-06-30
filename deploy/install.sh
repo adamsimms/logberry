@@ -9,12 +9,12 @@
 # Environment:
 #   DRIFTWOOD_INSTALL_DIR  default: ~/driftwood
 #   DRIFTWOOD_LEGACY_DIR   default: ~/logberry (renamed if present)
-#   DRIFTWOOD_REPO_URL     default: https://github.com/adamsimms/logberry.git
+#   DRIFTWOOD_REPO_URL     default: https://github.com/adamsimms/driftwood.git
 #   DRIFTWOOD_BRANCH       default: master
 
 set -euo pipefail
 
-REPO_URL="${DRIFTWOOD_REPO_URL:-https://github.com/adamsimms/logberry.git}"
+REPO_URL="${DRIFTWOOD_REPO_URL:-https://github.com/adamsimms/driftwood.git}"
 BRANCH="${DRIFTWOOD_BRANCH:-master}"
 INSTALL_DIR="${DRIFTWOOD_INSTALL_DIR:-$HOME/driftwood}"
 LEGACY_DIR="${DRIFTWOOD_LEGACY_DIR:-$HOME/logberry}"
