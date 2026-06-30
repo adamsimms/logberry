@@ -1,40 +1,128 @@
 # Driftwood
 
-Start live tide and wave data: 
+Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Placentia Bay, Newfoundland.
 
-- `cd ~/logberry/scripts && python3 live_data_stream.py`
+Deploy the repo to `/home/pi/driftwood` on the Pi.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    TideAPI[Tides.gc.ca] --> DataStream[live_data_stream.py]
+    WaveAPI[SmartAtlantic] --> DataStream
+    DataStream --> CSV[data/tide_data.csv + wave_status.csv]
+    CSV --> Motors[project_log_live.py]
+    Motors --> Slush[SlushEngine + stepper motors]
+    Gallery[gallery_timings.py] --> Motors
+```
+
+- **`scripts/live_data_stream.py`** — polls external APIs and writes CSV files to `data/`
+- **`scripts/project_log_live.py`** — reads CSVs and drives two NEMA 23 motors via SlushEngine
+- **`scripts/play_test.py`** — manual motor positioning for calibration
+- **`viz/`** — optional WebGL ocean wave simulation (browser only, not used by the Pi)
+
+## Quick start
+
+Install Python dependencies (on the Pi):
+
+```bash
+cd ~/driftwood
+pip3 install -r requirements.txt
+```
+
+Install the [SlushEngine Python library](https://github.com/Roboteurs/slushengine) separately — it requires the motor driver hardware.
+
+Start live tide and wave data:
+
+```bash
+cd ~/driftwood/scripts && python3 live_data_stream.py
+```
 
 Start motors:
 
-- `cd ~/logberry/scripts && python3 project_log_live.py`
+```bash
+cd ~/driftwood/scripts && python3 project_log_live.py
+```
 
-Configure log position manually in CM (-10,15):
+Configure log position manually in cm (e.g. `-10,15`):
 
-- `cd ~/logberry/scripts && python3 play_test.py`
+```bash
+cd ~/driftwood/scripts && python3 play_test.py
+```
 
-See what Python processes are running: 
-- `ps -ef | grep python`
+See what Python processes are running:
 
-## Auto-start scripts on Raspberry Pi Boot
-Add the following lines to `sudo nano /etc/rc.local` before `exit 0`
-- `(sleep 60
-python3 /home/pi/logberry/scripts/live_data_stream.py) &`
-- `(sleep 120
-python3 /home/pi/logberry/scripts/project_log_live.py) &`
+```bash
+ps -ef | grep python
+```
 
-## Auto-reboot Raspberry Pi at Set Interval
-Schedule a cron task via `crontab -e`.
-- Add `45 11 * * * sudo reboot` to reboot Raspberry Pi at 11:45 daily.
+## Configuration
+
+Edit `config/data_input.py` on the Pi:
+
+| Parameter | Description |
+|-----------|-------------|
+| `lowest_tide` | Motor steps from home to lowest tide position |
+| `tide_range` | Motor steps between lowest and highest tide |
+| `multiplier` | Scales wave motion amplitude |
+| `speed_multiplier` | Scales motor speed (max ~2) |
+| `data_refresh_interval` | Seconds between API polls in the data stream |
+
+Gallery hours are defined in `scripts/gallery_timings.py`. Update the `timings` dict for your venue schedule (weekday keys: Monday=0 … Sunday=6).
+
+SmartAtlantic API identity can be overridden with environment variables:
+
+- `DRIFTWOOD_WAVE_USER`
+- `DRIFTWOOD_WAVE_EMAIL`
+
+## Auto-start on boot (systemd)
+
+Copy the unit files and enable them:
+
+```bash
+sudo cp deploy/systemd/driftwood-data.service /etc/systemd/system/
+sudo cp deploy/systemd/driftwood-motors.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable driftwood-data driftwood-motors
+sudo systemctl start driftwood-data driftwood-motors
+```
+
+Check status:
+
+```bash
+sudo systemctl status driftwood-data driftwood-motors
+```
+
+## Scheduled reboot (optional)
+
+Schedule a cron task via `crontab -e`:
+
+```
+45 11 * * * sudo reboot
+```
+
+## Wi-Fi setup
+
+Configure network access on the Pi through your OS network manager (e.g. NetworkManager for eduroam). Do not commit credentials or machine-specific network config to this repo.
 
 ## Hardware
 
-- [Raspberry Pi 3 Model B:](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
-- [Raspberry Pi Power Supply 5V 3A](https://www.robotshop.com/ca/en/raspberry-pi-power-supply-5v-3a-micro-usb.html) *Optional*
+- [Raspberry Pi 3 Model B](https://www.raspberrypi.org/products/raspberry-pi-3-model-b/)
+- [Raspberry Pi Power Supply 5V 3A](https://www.robotshop.com/ca/en/raspberry-pi-power-supply-5v-3a-micro-usb.html) *(optional)*
 - [SlushEngine](https://roboteurs.com/products/slushengine)
-- [Nema 23 Stepper Motor](https://www.amazon.ca/Stepper-Motor-Bipolar-340oz-Router/dp/B074X52ZR2/ref=sr_1_1?s=industrial&ie=UTF8&qid=1521390147&sr=8-1&keywords=340oz.in+1.8A+4.95V) Bipolar 340oz.in 1.8A 4.95V 4 Wires CNC Router 
+- [Nema 23 Stepper Motor](https://www.amazon.ca/Stepper-Motor-Bipolar-340oz-Router/dp/B074X52ZR2/ref=sr_1_1?s=industrial&ie=UTF8&qid=1521390147&sr=8-1&keywords=340oz.in+1.8A+4.95V) — Bipolar 340oz.in 1.8A 4.95V 4 Wires CNC Router
 - [2.1mm Barrel Jack to terminal](https://www.robotshop.com/ca/en/barrel-jack-terminal-fit0151.html)
 - [8mm Aluminum Key Hub w/ Set Screw](https://www.robotshop.com/ca/en/8mm-aluminum-key-hub-set-screw.html)
 - [12VDC 3A Wall Adapter Power Supply](https://www.robotshop.com/ca/en/12vdc-3a-wall-adapter-power-supply.html)
 - Heat sinks
 
+## Repository layout
 
+```
+driftwood/
+├── config/data_input.py   # install parameters
+├── data/                  # runtime CSV output (gitignored)
+├── deploy/systemd/        # boot service units
+├── scripts/               # Pi control software
+└── viz/                   # optional browser visualization
+```
