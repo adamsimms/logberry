@@ -9,7 +9,7 @@ Deploy the repo to `/home/pi/driftwood` on the Pi.
 From the Pi (clones from GitHub):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/adamsimms/driftwood/master/deploy/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/adamsimms/logberry/master/deploy/install.sh | bash
 ```
 
 Or from a local checkout:
@@ -133,6 +133,12 @@ Configure network access on the Pi through your OS network manager (e.g. Network
 - [8mm Aluminum Key Hub w/ Set Screw](https://www.robotshop.com/ca/en/8mm-aluminum-key-hub-set-screw.html)
 - [12VDC 3A Wall Adapter Power Supply](https://www.robotshop.com/ca/en/12vdc-3a-wall-adapter-power-supply.html)
 - Heat sinks
+
+## Repository
+
+GitHub: [github.com/adamsimms/logberry](https://github.com/adamsimms/logberry) (project name: **Driftwood**)
+
+To rename the repository to `driftwood` in GitHub: **Settings → General → Repository name**.
 
 ## Repository layout
 
