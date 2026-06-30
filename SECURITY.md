@@ -12,13 +12,11 @@ Driftwood runs on a private Raspberry Pi in a gallery setting. Security updates 
 
 **Do not open a public GitHub issue for security problems.**
 
-Email the repository owner privately with:
+Email the maintainer privately using the contact details at [adamsim.ms](https://adamsim.ms). Include:
 
 - A description of the issue
 - Steps to reproduce
 - Impact assessment (if known)
-
-If you do not have a contact address, open a [GitHub security advisory](https://github.com/adamsimms/driftwood/security/advisories/new) for this repository.
 
 ## What must never be committed
 
