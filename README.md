@@ -1,6 +1,6 @@
 # Driftwood
 
-Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Placentia Bay, Newfoundland.
+Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Newfoundland.
 
 Deploy the repo to `/home/pi/driftwood` on the Pi.
 
@@ -9,7 +9,7 @@ Deploy the repo to `/home/pi/driftwood` on the Pi.
 From the Pi (clones from GitHub):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/adamsimms/logberry/master/deploy/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/adamsimms/driftwood/master/deploy/install.sh | bash
 ```
 
 Or from a local checkout:
@@ -24,8 +24,8 @@ The installer renames `~/logberry` to `~/driftwood` if needed, moves any legacy 
 
 ```mermaid
 flowchart LR
-    TideAPI[Tides.gc.ca] --> DataStream[live_data_stream.py]
-    WaveAPI[SmartAtlantic] --> DataStream
+    TideAPI[CHS IWLS API] --> DataStream[live_data_stream.py]
+    WaveAPI[SmartAtlantic ERDDAP] --> DataStream
     DataStream --> CSV[data/tide_data.csv + wave_status.csv]
     CSV --> Motors[project_log_live.py]
     Motors --> Slush[SlushEngine + stepper motors]
@@ -33,7 +33,8 @@ flowchart LR
 ```
 
 - **`scripts/live_data_stream.py`** — polls external APIs and writes CSV files to `data/`
-- **`scripts/project_log_live.py`** — reads CSVs and drives two NEMA 23 motors via SlushEngine
+- **`scripts/project_log_live.py`** — thin entry point; motor logic lives in `motor_*.py`
+- **`scripts/check_apis.py`** — verify tide and wave data sources
 - **`scripts/play_test.py`** — manual motor positioning for calibration
 - **`viz/`** — optional WebGL ocean wave simulation (browser only, not used by the Pi)
 
@@ -42,6 +43,10 @@ flowchart LR
 Install the [SlushEngine Python library](https://github.com/Roboteurs/slushengine) separately — it requires the motor driver hardware.
 
 If you have not run the [install step](#install) yet, do that first.
+
+```bash
+cd ~/driftwood/scripts && python3 check_apis.py
+```
 
 Start live tide and wave data:
 
@@ -78,10 +83,12 @@ Edit `config/data_input.py` on the Pi:
 | `multiplier` | Scales wave motion amplitude |
 | `speed_multiplier` | Scales motor speed (max ~2) |
 | `data_refresh_interval` | Seconds between API polls in the data stream |
+| `TIDE_STATION_ID` | CHS IWLS station ID (default: Bonavista) |
+| `WAVE_ERDDAP_DATASET` | SmartAtlantic ERDDAP dataset (default: Holyrood Buoy 2) |
 
-Gallery hours are defined in `scripts/gallery_timings.py`. Update the `timings` dict for your venue schedule (weekday keys: Monday=0 … Sunday=6).
+Gallery hours are defined in `config/gallery_hours.py`. Update `GALLERY_HOURS` for your venue schedule (weekday keys: Monday=0 … Sunday=6).
 
-SmartAtlantic API identity can be overridden with environment variables:
+SmartAtlantic request identity can be overridden with environment variables:
 
 - `DRIFTWOOD_WAVE_USER`
 - `DRIFTWOOD_WAVE_EMAIL`
@@ -131,9 +138,13 @@ Configure network access on the Pi through your OS network manager (e.g. Network
 
 ```
 driftwood/
-├── config/data_input.py   # install parameters
+├── config/
+│   ├── data_input.py      # install parameters and API sources
+│   └── gallery_hours.py   # gallery schedule
 ├── data/                  # runtime CSV output (gitignored)
-├── deploy/systemd/        # boot service units
+├── deploy/
+│   ├── install.sh         # Pi install script
+│   └── systemd/           # boot service units
 ├── scripts/               # Pi control software
 └── viz/                   # optional browser visualization
 ```
