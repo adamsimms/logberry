@@ -12,7 +12,9 @@ Driftwood runs on a private Raspberry Pi in a gallery setting. Security updates 
 
 **Do not open a public GitHub issue for security problems.**
 
-Email the maintainer privately using the contact details at [adamsim.ms](https://adamsim.ms). Include:
+Report vulnerabilities privately through [GitHub private vulnerability reporting](https://github.com/adamsimms/driftwood/security/advisories/new). You can also use the repository **Security** tab and choose **Report a vulnerability**. Only maintainers can see submitted reports.
+
+Include:
 
 - A description of the issue
 - Steps to reproduce
