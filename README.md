@@ -2,6 +2,8 @@
 
 Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Newfoundland.
 
+![Driftwood kinetic installation](docs/images/driftwood-03AS.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Deploy the repo to `/home/pi/driftwood` on the Pi.
@@ -164,30 +166,3 @@ Configure network access on the Pi through your OS network manager (e.g. Network
 - [8mm Aluminum Key Hub w/ Set Screw](https://www.robotshop.com/ca/en/8mm-aluminum-key-hub-set-screw.html)
 - [12VDC 3A Wall Adapter Power Supply](https://www.robotshop.com/ca/en/12vdc-3a-wall-adapter-power-supply.html)
 - Heat sinks
-
-## Repository
-
-GitHub: [github.com/adamsimms/driftwood](https://github.com/adamsimms/driftwood)
-
-## Repository layout
-
-```
-driftwood/
-├── config/
-│   ├── data_input.py      # install parameters and API sources
-│   └── gallery_hours.py   # gallery schedule
-├── data/                  # runtime CSV output (gitignored)
-├── deploy/
-│   ├── install.sh         # Pi install script
-│   └── systemd/           # boot service units
-├── scripts/               # Pi control software
-└── viz/                   # optional browser visualization
-```
-
-## License
-
-MIT License — see [LICENSE](LICENSE). Copyright (c) 2017 Adam Simms.
-
-## Contributing
-
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
