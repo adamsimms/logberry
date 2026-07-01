@@ -1,13 +1,5 @@
 # Security Policy
 
-## Supported versions
-
-| Version | Supported |
-|---------|-----------|
-| `master` | Yes |
-
-Driftwood runs on a private Raspberry Pi in a gallery setting. Security updates apply to the `master` branch.
-
 ## Reporting a vulnerability
 
 **Do not open a public GitHub issue for security problems.**
