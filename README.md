@@ -2,6 +2,8 @@
 
 Kinetic installation software for a Raspberry Pi that drives stepper motors in response to live tide and wave data from Newfoundland.
 
+![Driftwood kinetic installation](docs/images/driftwood-01AS.png)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Deploy the repo to `/home/pi/driftwood` on the Pi.
